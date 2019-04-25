@@ -1,5 +1,8 @@
 package com.example.mhz.myuniversityapp;
 
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -16,8 +19,14 @@ import android.view.View;
 import com.example.mhz.myuniversityapp.processes.ItemFragment;
 import com.example.mhz.myuniversityapp.processes.Processes;
 
+import java.util.concurrent.TimeUnit;
+
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener,ItemFragment.OnListFragmentInteractionListener {
+        implements NavigationView.OnNavigationItemSelectedListener,
+        ItemFragment.OnListFragmentInteractionListener,
+        BlankFragment.OnFragmentInteractionListener {
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +52,12 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        BlankFragment blankFragment = new BlankFragment();
+        fragmentTransaction.replace(R.id.fragment,blankFragment);
+        fragmentTransaction.commit();
     }
 
     @Override
@@ -81,11 +96,17 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
-        int id = item.getItemId();
 
+        int id = item.getItemId();
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        ItemFragment itemFragment = new ItemFragment();
+        BlankFragment blankFragment = new BlankFragment();
         if (id == R.id.nav_camera) {
-            // Handle the camera action
+            fragmentTransaction.replace(R.id.fragment,itemFragment);
+            fragmentTransaction.replace(R.id.fragment,itemFragment);
         } else if (id == R.id.nav_gallery) {
+            fragmentTransaction.replace(R.id.fragment,blankFragment);
 
         } else if (id == R.id.nav_slideshow) {
 
@@ -97,6 +118,13 @@ public class MainActivity extends AppCompatActivity
 
         }
 
+        fragmentTransaction.addToBackStack(null);
+        try {
+            TimeUnit.SECONDS.sleep(1);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        fragmentTransaction.commit();
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
@@ -109,6 +137,12 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onPointerCaptureChanged(boolean hasCapture) {
+
+    }
+
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
 
     }
 }

@@ -21,7 +21,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * <p>
  * TODO: Replace all uses of this class before publishing your app.
  */
-public class Processes {
+public class Processes  {
 
     private static final String TAG = "Cases";
 
@@ -31,7 +31,6 @@ public class Processes {
     public static List<Case> cases = new ArrayList<>();
 
     public Processes(){
-        // Add some sample items.
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://jsonplaceholder.typicode.com/")
                 .addConverterFactory(GsonConverterFactory.create())
@@ -42,18 +41,20 @@ public class Processes {
             @Override
             public void onResponse(@NonNull Call<List<Case>> call, @NonNull Response<List<Case>> response) {
                 //CASES.set(0,response.body().get(0));
+                Processes.cases.clear();
                 for (int i=0;i<response.body().size();i++){
                     Processes.cases.add(new Case(String.valueOf(i),response.body().get(i).getPro_title(),response.body().get(i).getPro_uid()));
                 }
                 Log.i(TAG,"Get Cases : Successful");
             }
-
             @Override
             public void onFailure(@NonNull Call<List<Case>> call, @NonNull Throwable t) {
                 Log.i(TAG,"Get Cases : Failure");
             }
         });
     }
+
+
 
     public List<Case> getCases() {
         return cases;
@@ -63,9 +64,6 @@ public class Processes {
         this.cases = cases;
     }
 
-    /**
-     * A dummy item representing a piece of pro_title.
-     */
     public class Case {
         public final String tas_uid;
         public final String pro_title;

@@ -9,9 +9,16 @@
     tools:showIn="@layout/app_bar_main">
 
 
-    <fragment
-        android:id="@+id/fragment"
-        class="com.example.mhz.myuniversityapp.processes.ItemFragment"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:id="@+id/fragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </FrameLayout>
+    </LinearLayout>
+
 </android.support.constraint.ConstraintLayout>
