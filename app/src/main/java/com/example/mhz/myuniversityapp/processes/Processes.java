@@ -37,15 +37,16 @@ public class Processes  {
                 .build();
         JsonPlaceHolderAPI jsonPlaceHolderAPI = retrofit.create(JsonPlaceHolderAPI.class);
         Call<List<Case>> call = jsonPlaceHolderAPI.getUser("Bearer "+ AuthenticationSupervisor.getToken());
+
         call.enqueue(new Callback<List<Case>>() {
             @Override
             public void onResponse(@NonNull Call<List<Case>> call, @NonNull Response<List<Case>> response) {
-                //CASES.set(0,response.body().get(0));
                 Processes.cases.clear();
                 for (int i=0;i<response.body().size();i++){
                     Processes.cases.add(new Case(String.valueOf(i),response.body().get(i).getPro_title(),response.body().get(i).getPro_uid()));
                 }
                 Log.i(TAG,"Get Cases : Successful");
+                //MainActivity.dialog.hide();
             }
             @Override
             public void onFailure(@NonNull Call<List<Case>> call, @NonNull Throwable t) {

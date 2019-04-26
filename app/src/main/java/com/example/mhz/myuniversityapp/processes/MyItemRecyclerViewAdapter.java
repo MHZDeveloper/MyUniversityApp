@@ -1,5 +1,6 @@
 package com.example.mhz.myuniversityapp.processes;
 
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.mhz.myuniversityapp.R;
+import com.example.mhz.myuniversityapp.dynaforms.DynaFormActivity;
 import com.example.mhz.myuniversityapp.processes.ItemFragment.OnListFragmentInteractionListener;
 import com.example.mhz.myuniversityapp.processes.Processes.Case;
 
@@ -47,7 +49,9 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
                     // Notify the active callbacks interface (the activity, if the
                     // fragment is attached to one) that an item has been selected.
                     mListener.onListFragmentInteraction(holder.mItem);
-                    System.out.println("*********************LOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOL");
+                    Intent intent = new Intent(v.getContext(),DynaFormActivity.class);
+                    intent.putExtra("title","LOOOOL");
+                    v.getContext().startActivity(intent);
                 }
             }
         });

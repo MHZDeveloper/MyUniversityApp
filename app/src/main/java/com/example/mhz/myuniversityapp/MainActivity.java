@@ -2,6 +2,7 @@ package com.example.mhz.myuniversityapp;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.app.ProgressDialog;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -19,12 +20,12 @@ import android.view.View;
 import com.example.mhz.myuniversityapp.processes.ItemFragment;
 import com.example.mhz.myuniversityapp.processes.Processes;
 
-import java.util.concurrent.TimeUnit;
-
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         ItemFragment.OnListFragmentInteractionListener,
         BlankFragment.OnFragmentInteractionListener {
+
+    public static ProgressDialog dialog;
 
 
 
@@ -102,8 +103,12 @@ public class MainActivity extends AppCompatActivity
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         ItemFragment itemFragment = new ItemFragment();
         BlankFragment blankFragment = new BlankFragment();
+//        try {
+//            TimeUnit.SECONDS.sleep(2);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
         if (id == R.id.nav_camera) {
-            fragmentTransaction.replace(R.id.fragment,itemFragment);
             fragmentTransaction.replace(R.id.fragment,itemFragment);
         } else if (id == R.id.nav_gallery) {
             fragmentTransaction.replace(R.id.fragment,blankFragment);
@@ -117,16 +122,9 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_send) {
 
         }
-
-        fragmentTransaction.addToBackStack(null);
-        try {
-            TimeUnit.SECONDS.sleep(1);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        fragmentTransaction.commit();
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
+        fragmentTransaction.commit();
         return true;
     }
 
@@ -145,4 +143,5 @@ public class MainActivity extends AppCompatActivity
     public void onFragmentInteraction(Uri uri) {
 
     }
+
 }

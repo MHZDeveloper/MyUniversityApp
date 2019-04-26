@@ -27,11 +27,14 @@ public class ItemFragment extends Fragment {
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
 
+    private View view;
+
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
     public ItemFragment() {
+        Processes processes = new Processes();
     }
 
     // TODO: Customize parameter initialization
@@ -56,8 +59,10 @@ public class ItemFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_item_list, container, false);
-        Processes processes = new Processes();
+//        MainActivity.dialog = ProgressDialog.show(getActivity(), "Traitement",
+//                "Chargement en cours", true);
+        view = inflater.inflate(R.layout.fragment_item_list, container, false);;
+
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
