@@ -24,9 +24,7 @@ import android.widget.Toast;
 import com.example.mhz.myuniversityapp.MainActivity;
 import com.example.mhz.myuniversityapp.R;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import java.io.IOException;
 
 /**
  * A login screen that offers login via email/password.
@@ -100,8 +98,8 @@ public class LoginActivity extends AppCompatActivity  {
         View focusView = null;
 
         // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
-            mPasswordView.setError(getString(R.string.error_invalid_password));
+        if (password.isEmpty()) {
+            mPasswordView.setError(getString(R.string.error_field_required));
             focusView = mPasswordView;
             cancel = true;
         }
@@ -128,33 +126,6 @@ public class LoginActivity extends AppCompatActivity  {
             mAuthTask = new UserLoginTask(email, password);
             mAuthTask.execute((Void) null);
         }
-
-        //
-        AuthenticationRequest authenticationRequest = new AuthenticationRequest(email,password);
-        AuthenticationSupervisor authenticationSupervisor = new AuthenticationSupervisor();
-        authenticationSupervisor.authenticate(authenticationRequest, new Callback<AuthenticationResponse>() {
-            @Override
-            public void onResponse(Call<AuthenticationResponse> call, Response<AuthenticationResponse> response) {
-                if (response.body()!= null){
-                    Log.i(TAG,"Success Authentication, Token : "+response.body().getAccess_token());
-                    AuthenticationSupervisor.setToken(response.body().getAccess_token());
-                    Intent intent = new Intent(getBaseContext(),MainActivity.class);
-                    startActivity(intent);
-                }
-                else {
-                    Toast.makeText(LoginActivity.this, "Bad Credentials", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(getBaseContext(),LoginActivity.class);
-                    startActivity(intent);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<AuthenticationResponse> call, Throwable t) {
-                Toast.makeText(LoginActivity.this, "Problem", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(getBaseContext(),LoginActivity.class);
-                startActivity(intent);
-            }
-        });
 
     }
 
@@ -215,11 +186,31 @@ public class LoginActivity extends AppCompatActivity  {
         protected Boolean doInBackground(Void... params) {
             // TODO: attempt authentication against a network service.
 
+           /* authentication process */
+
+            AuthenticationRequest authenticationRequest = new AuthenticationRequest(mEmail,mPassword);
+            AuthenticationSupervisor authenticationSupervisor = new AuthenticationSupervisor();
+            AuthenticationResponse authenticationResponse;
             try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                return false;
+                authenticationResponse= authenticationSupervisor.authenticate(authenticationRequest);
+                if(authenticationResponse!=null){
+                    AuthenticationSupervisor.setToken(authenticationResponse.getAccess_token());
+                    Log.i(TAG,"Success Authentication, Token : "+authenticationResponse.getAccess_token());
+                    AuthenticationSupervisor.setAuthenticated(true);
+                }
+                else{
+                    Toast.makeText(LoginActivity.this, "Bad Credentials", Toast.LENGTH_SHORT).show();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if (AuthenticationSupervisor.getToken()!=null){
+                Intent intent = new Intent(getBaseContext(),MainActivity.class);
+                startActivity(intent);
+                finish();
+            }
+            else{
+                Toast.makeText(LoginActivity.this, "Problem", Toast.LENGTH_SHORT).show();
             }
             // TODO: register the new account here.
             return true;
@@ -231,7 +222,7 @@ public class LoginActivity extends AppCompatActivity  {
             showProgress(false);
 
             if (success) {
-                finish();
+
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();

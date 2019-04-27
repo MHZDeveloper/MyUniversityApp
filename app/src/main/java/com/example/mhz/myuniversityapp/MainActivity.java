@@ -28,7 +28,6 @@ public class MainActivity extends AppCompatActivity
     public static ProgressDialog dialog;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,7 +56,7 @@ public class MainActivity extends AppCompatActivity
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         BlankFragment blankFragment = new BlankFragment();
-        fragmentTransaction.replace(R.id.fragment,blankFragment);
+        fragmentTransaction.replace(R.id.fragment, blankFragment);
         fragmentTransaction.commit();
     }
 
@@ -66,7 +65,8 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
+        }
+        else{
             super.onBackPressed();
         }
     }
@@ -109,9 +109,9 @@ public class MainActivity extends AppCompatActivity
 //            e.printStackTrace();
 //        }
         if (id == R.id.nav_camera) {
-            fragmentTransaction.replace(R.id.fragment,itemFragment);
+            fragmentTransaction.replace(R.id.fragment, itemFragment);
         } else if (id == R.id.nav_gallery) {
-            fragmentTransaction.replace(R.id.fragment,blankFragment);
+            fragmentTransaction.replace(R.id.fragment, blankFragment);
 
         } else if (id == R.id.nav_slideshow) {
 

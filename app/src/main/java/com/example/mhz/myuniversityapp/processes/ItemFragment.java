@@ -13,6 +13,8 @@ import android.view.ViewGroup;
 import com.example.mhz.myuniversityapp.R;
 import com.example.mhz.myuniversityapp.processes.Processes.Case;
 
+import java.util.concurrent.ExecutionException;
+
 /**
  * A fragment representing a list of Items.
  * <p/>
@@ -28,13 +30,21 @@ public class ItemFragment extends Fragment {
     private OnListFragmentInteractionListener mListener;
 
     private View view;
+    private Processes processes;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
     public ItemFragment() {
-        Processes processes = new Processes();
+        processes = new Processes();
+        try {
+            processes.execute().get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
     }
 
     // TODO: Customize parameter initialization
@@ -61,7 +71,8 @@ public class ItemFragment extends Fragment {
                              Bundle savedInstanceState) {
 //        MainActivity.dialog = ProgressDialog.show(getActivity(), "Traitement",
 //                "Chargement en cours", true);
-        view = inflater.inflate(R.layout.fragment_item_list, container, false);;
+
+        view = inflater.inflate(R.layout.fragment_item_list, container, false);
 
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
