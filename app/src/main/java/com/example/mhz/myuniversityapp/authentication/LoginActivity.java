@@ -124,7 +124,7 @@ public class LoginActivity extends AppCompatActivity  {
             // perform the user login attempt.
             showProgress(true);
             mAuthTask = new UserLoginTask(email, password);
-            mAuthTask.execute((Void) null);
+            mAuthTask.execute();
         }
 
     }
@@ -132,11 +132,6 @@ public class LoginActivity extends AppCompatActivity  {
     private boolean isEmailValid(String email) {
         //TODO: Replace this with your own logic
         return email.contains("@");
-    }
-
-    private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
-        return password.length() > 4;
     }
 
     /**
@@ -199,18 +194,15 @@ public class LoginActivity extends AppCompatActivity  {
                     AuthenticationSupervisor.setAuthenticated(true);
                 }
                 else{
-                    Toast.makeText(LoginActivity.this, "Bad Credentials", Toast.LENGTH_SHORT).show();
+                    Log.i(TAG,"Failed Authentication");
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            if (AuthenticationSupervisor.getToken()!=null){
+            if (AuthenticationSupervisor.isAuthenticated()){
                 Intent intent = new Intent(getBaseContext(),MainActivity.class);
                 startActivity(intent);
                 finish();
-            }
-            else{
-                Toast.makeText(LoginActivity.this, "Problem", Toast.LENGTH_SHORT).show();
             }
             // TODO: register the new account here.
             return true;
@@ -221,8 +213,8 @@ public class LoginActivity extends AppCompatActivity  {
             mAuthTask = null;
             showProgress(false);
 
-            if (success) {
-
+            if (AuthenticationSupervisor.getToken()==null) {
+                Toast.makeText(getApplicationContext(),"Bad cresentials",Toast.LENGTH_SHORT).show();
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();

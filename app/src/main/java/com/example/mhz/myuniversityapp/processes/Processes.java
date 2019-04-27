@@ -67,7 +67,7 @@ public class Processes extends AsyncTask<Void, Void, Boolean> {
         if (cases!=null){
             Processes.cases.clear();
             for (int i=0;i<cases.size();i++){
-                Processes.cases.add(new Case(String.valueOf(i),cases.get(i).getPro_title(),cases.get(i).getPro_uid()));
+                Processes.cases.add(new Case(cases.get(i).getTas_uid(),cases.get(i).getPro_title(),cases.get(i).getPro_uid()));
             }
             Log.i(TAG,"Get Cases : Successful");
             return true;

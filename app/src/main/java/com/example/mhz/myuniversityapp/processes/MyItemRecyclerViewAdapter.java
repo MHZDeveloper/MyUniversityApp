@@ -39,7 +39,7 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).tas_uid);
+        //holder.mIdView.setText(mValues.get(position).);
         holder.mContentView.setText(mValues.get(position).pro_title);
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
@@ -50,8 +50,8 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
                     // fragment is attached to one) that an item has been selected.
                     mListener.onListFragmentInteraction(holder.mItem);
                     Intent intent = new Intent(v.getContext(),DynaFormActivity.class);
-                    intent.putExtra("pro_uid",mValues.get(position).pro_uid);
-                    intent.putExtra("tas_uid",mValues.get(position).tas_uid);
+                    intent.putExtra("pro_uid",mValues.get(position).getPro_uid());
+                    intent.putExtra("tas_uid",mValues.get(position).getTas_uid());
                     v.getContext().startActivity(intent);
                 }
             }
@@ -72,7 +72,7 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mIdView = (TextView) view.findViewById(R.id.tas_uid);
+            mIdView = (TextView) view.findViewById(R.id.position);
             mContentView = (TextView) view.findViewById(R.id.pro_title);
         }
 

@@ -37,9 +37,4 @@ public interface JsonPlaceHolderAPI {
     })
     Call<DynaForm> getDynaform(@Path("pro-uid") String pro_uid, @Path("step-uid-obj") String step_uid_obj, @Header("Authorization") String authHeader);
 
-//    @Headers({
-//            "Content-Type:application/json"
-//    })
-//    @POST("/api/1.0/isi/cases")
-//    Call<PostCaseResponse> PostCase(@Body PostCaseRequest postCaseRequest);
 }
