@@ -108,23 +108,10 @@ public class MainActivity extends AppCompatActivity
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         ItemFragment itemFragment = new ItemFragment();
         BlankFragment blankFragment = new BlankFragment();
-//        try {
-//            TimeUnit.SECONDS.sleep(2);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-        if (id == R.id.nav_camera) {
+        if (id == R.id.demandes) {
             fragmentTransaction.replace(R.id.fragment, itemFragment);
-        } else if (id == R.id.nav_gallery) {
+        } else if (id == R.id.menu) {
             fragmentTransaction.replace(R.id.fragment, blankFragment);
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
 
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
