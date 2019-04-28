@@ -5,6 +5,8 @@ import com.example.mhz.myuniversityapp.authentication.AuthenticationRequest;
 import com.example.mhz.myuniversityapp.authentication.AuthenticationResponse;
 import com.example.mhz.myuniversityapp.dynaforms.DynaForm;
 import com.example.mhz.myuniversityapp.dynaforms.Step;
+import com.example.mhz.myuniversityapp.dynaforms.post.PostRequest;
+import com.example.mhz.myuniversityapp.dynaforms.post.PostResponse;
 import com.example.mhz.myuniversityapp.processes.Processes;
 
 import java.util.List;
@@ -36,5 +38,11 @@ public interface JsonPlaceHolderAPI {
             "Content-Type:application/json"
     })
     Call<DynaForm> getDynaform(@Path("pro-uid") String pro_uid, @Path("step-uid-obj") String step_uid_obj, @Header("Authorization") String authHeader);
+
+    @Headers({
+            "Content-Type:application/json"
+    })
+    @POST("cases")
+    Call<PostResponse> PostCase(@Body PostRequest postCaseRequest, @Header("Authorization") String authHeader);
 
 }

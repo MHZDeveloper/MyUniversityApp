@@ -1,6 +1,7 @@
 package com.example.mhz.myuniversityapp.dynaforms;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
@@ -15,6 +16,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.mhz.myuniversityapp.R;
 import com.google.gson.JsonArray;
@@ -24,20 +26,28 @@ public class DynaFormActivity extends AppCompatActivity {
 
     private static final String TAG = "dynaforms (activity)";
     LinearLayout.LayoutParams params;
+    private Context context;
     private View dynaforms;
     private View dynaformProgress;
     private LinearLayout formContainer;
     private LinearLayout tmpLayout;
+    private DynaFormSupervisor dynaFormSupervisor;
+
+    private String postObject;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dyna_form);
+        context = this;
 
+        dynaFormSupervisor = new DynaFormSupervisor();
+
+        postObject = "";
         params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
-        params.setMargins(10,10,10,30);
+        params.setMargins(10, 10, 10, 30);
 
-        tmpLayout = new LinearLayout(getBaseContext());
+        tmpLayout = new LinearLayout(context);
         dynaforms = findViewById(R.id.dynaforms);
         dynaformProgress = findViewById(R.id.dynaform_progress);
         formContainer = findViewById(R.id.form_container);
@@ -51,7 +61,6 @@ public class DynaFormActivity extends AppCompatActivity {
 
         @Override
         protected Boolean doInBackground(Void... voids) {
-            DynaFormSupervisor dynaFormSupervisor = new DynaFormSupervisor();
             Log.i(TAG, "pro_uid = " + getIntent().getStringExtra("pro_uid"));
             Log.i(TAG, "tas_uid = " + getIntent().getStringExtra("tas_uid"));
             JsonArray jarray = dynaFormSupervisor.decryptArray(getIntent().getStringExtra("pro_uid"), getIntent().getStringExtra("tas_uid"));
@@ -60,69 +69,65 @@ public class DynaFormActivity extends AppCompatActivity {
                     JsonObject tmpObject = jarray.get(i).getAsJsonArray().get(j).getAsJsonObject();
                     if (tmpObject != null &&
                             tmpObject.getAsJsonObject() != null &&
-                            tmpObject.getAsJsonObject().get("type")!=null &&
-                            tmpObject.getAsJsonObject().get("label")!=null) {
+                            tmpObject.getAsJsonObject().get("type") != null &&
+                            tmpObject.getAsJsonObject().get("label") != null) {
                         String type = tmpObject.getAsJsonObject().get("type").toString();
-                        String label = tmpObject.getAsJsonObject().get("label").toString();
-                        if (type.contains("image")) {
-                            ImageView imageView = new ImageView(getApplicationContext());
+                        if (type.contains("image")) { //    IMAGE
+                            ImageView imageView = new ImageView(context);
                             imageView.setImageResource(R.mipmap.logo);
-                            imageView.setLayoutParams(params);
                             tmpLayout.addView(imageView);
 
-                        } else if (type.contains("textarea")) {
-                            EditText editText = new EditText(getBaseContext());
-                            editText.setHint(tmpObject.getAsJsonObject().get("label").toString().replaceAll("\"","").replaceAll("\\\\n",""));
-                            editText.setTextSize(20);
-                            editText.setLayoutParams(params);
-                            editText.setBackgroundColor(Color.WHITE);
-                            editText.setHintTextColor(Color.GRAY);
-                            editText.setGravity(Gravity.CENTER);
-                            editText.setTextColor(Color.BLACK);
-                            editText.setSingleLine(false);
-                            editText.setImeOptions(EditorInfo.IME_FLAG_NO_ENTER_ACTION);
-                            editText.setPadding(5,5,5,5);
-                            tmpLayout.addView(editText);
-                        }
-                        else if (type.contains("text")) {
-                            EditText editText = new EditText(getBaseContext());
-                            editText.setHint(tmpObject.getAsJsonObject().get("label").toString().replaceAll("\"","").replaceAll("\\\\n",""));
+                        } else if (type.contains("textarea")) { //  TEXTAREA
+                            EditText editText = new EditText(context);
+                            editText.setTag(tmpObject.getAsJsonObject().get("var_name").toString());
+                            editText.setHint(tmpObject.getAsJsonObject().get("label").toString().replaceAll("\"", "").replaceAll("\\\\n", ""));
                             editText.setTextSize(25);
                             editText.setLayoutParams(params);
-                            editText.setBackgroundColor(Color.WHITE);
-                            editText.setHintTextColor(Color.GRAY);
-                            editText.setGravity(Gravity.CENTER);
-                            editText.setTextColor(Color.BLACK);
-                            editText.setPadding(5,5,5,5);
+                            editText.setSingleLine(false);
+                            editText.setImeOptions(EditorInfo.IME_FLAG_NO_ENTER_ACTION);
+                            editText.setPadding(5, 5, 5, 5);
                             tmpLayout.addView(editText);
-                        }else if (type.contains("subtitle")) {
-                            TextView textView = new TextView(getBaseContext());
-                            textView.setLayoutParams(params);
+                        } else if (type.contains("text")) { // TEXT
+                            EditText editText = new EditText(context);
+                            editText.setTag(tmpObject.getAsJsonObject().get("var_name").toString());
+                            editText.setHint(tmpObject.getAsJsonObject().get("label").toString().replaceAll("\"", "").replaceAll("\\\\n", ""));
+                            editText.setTextSize(25);
+                            editText.setSingleLine(true);
+                            editText.setLayoutParams(params);
+                            editText.setGravity(Gravity.CENTER);
+                            editText.setPadding(5, 5, 5, 5);
+                            tmpLayout.addView(editText);
+                        } else if (type.contains("subtitle")) { // SUBTITLE
+                            TextView textView = new TextView(context);
                             textView.setTextColor(Color.BLACK);
+                            textView.setLayoutParams(params);
                             textView.setGravity(Gravity.CENTER_HORIZONTAL);
                             textView.setTextSize(20);
-                            textView.setPadding(5,5,5,5);
-                            textView.setText(tmpObject.getAsJsonObject().get("label").toString().replaceAll("\"","").replaceAll("\\\\n",""));
+                            textView.setPadding(5, 5, 5, 5);
+                            textView.setText(tmpObject.getAsJsonObject().get("label").toString().replaceAll("\"", "").replaceAll("\\\\n", ""));
                             tmpLayout.addView(textView);
-                        }
-                        else if (type.contains("title")) {
-                            TextView textView = new TextView(getBaseContext(),null,R.style.TitleStyle);
+                        } else if (type.contains("title")) { // TITLE
+                            TextView textView = new TextView(context);
                             textView.setLayoutParams(params);
-                            textView.setTypeface(null, Typeface.BOLD);
                             textView.setTextColor(Color.BLACK);
+                            textView.setTypeface(null, Typeface.BOLD);
                             textView.setGravity(Gravity.CENTER_HORIZONTAL);
                             textView.setTextSize(25);
-                            textView.setPadding(5,5,5,5);
-                            textView.setText(tmpObject.getAsJsonObject().get("label").toString().replaceAll("\"","").replaceAll("\\\\n",""));
+                            textView.setPadding(5, 5, 5, 5);
+                            textView.setText(tmpObject.getAsJsonObject().get("label").toString().replaceAll("\"", "").replaceAll("\\\\n", ""));
                             tmpLayout.addView(textView);
-                        }
-                        else if (type.contains("submit")) {
-                            Button button = new Button(getBaseContext());
+                        } else if (type.contains("submit")) { // SUBMIT
+                            Button button = new Button(context);
                             button.setLayoutParams(params);
-                            //button.setTextColor(Color.BLACK);
-                            button.setPadding(5,5,5,5);
-                            button.setText(tmpObject.getAsJsonObject().get("label").toString().replaceAll("\"","").replaceAll("\\\\n",""));
+                            button.setPadding(5, 5, 5, 5);
+                            button.setText(tmpObject.getAsJsonObject().get("label").toString().replaceAll("\"", "").replaceAll("\\\\n", ""));
                             tmpLayout.addView(button);
+                            button.setOnClickListener(view -> {
+                                if (checkNoEmptyArea_PreparePostObject()){
+                                    PostRequestTask postRequestTask = new PostRequestTask();
+                                    postRequestTask.execute();
+                                }
+                            });
                         }
                     }
                 }
@@ -142,14 +147,60 @@ public class DynaFormActivity extends AppCompatActivity {
             formContainer.removeAllViewsInLayout();
             tmpLayout.removeAllViewsInLayout();
             tmpLayout.setLayoutParams(params);
-            tmpLayout.setPadding(5,5,5,5);
+            tmpLayout.setPadding(5, 5, 5, 5);
             tmpLayout.setOrientation(LinearLayout.VERTICAL);
             tmpLayout.setGravity(Gravity.CENTER_HORIZONTAL);
+        }
+
+        public boolean checkNoEmptyArea_PreparePostObject(){
+            boolean resultEmpty = true;
+            postObject = "[";
+            for (int i=0;i<tmpLayout.getChildCount();i++){
+                if (tmpLayout.getChildAt(i) instanceof EditText) {
+                    if (((EditText) tmpLayout.getChildAt(i)).getText().toString().replaceAll(" ", "").isEmpty()) {
+                        resultEmpty = false;
+                        Toast.makeText(context, "Champ vide", Toast.LENGTH_SHORT).show();
+                        break;
+                    } else {
+                        postObject = postObject + "{"+tmpLayout.getChildAt(i).getTag().toString()+":\""+((EditText) tmpLayout.getChildAt(i)).getText().toString()+"\"},";
+                    }
+                }
+            }
+            postObject = postObject.substring(0,postObject.length()-1);
+            postObject = postObject+"]";
+            System.out.println("*********"+postObject);
+            return resultEmpty;
         }
 
         @Override
         protected void onCancelled() {
             super.onCancelled();
+        }
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    public class PostRequestTask extends AsyncTask<Void, Void, Boolean>{
+
+        private boolean result;
+
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            result = dynaFormSupervisor.submit(getIntent().getStringExtra("pro_uid"),
+                    getIntent().getStringExtra("tas_uid"),
+                    postObject);
+            return true;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            if(result){
+                Toast.makeText(getApplicationContext(),"Request sent",Toast.LENGTH_SHORT).show();
+                finish();
+            }
+            else{
+                Toast.makeText(getApplicationContext(),"Problem",Toast.LENGTH_SHORT).show();
+            }
         }
     }
 }

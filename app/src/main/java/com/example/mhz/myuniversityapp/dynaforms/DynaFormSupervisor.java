@@ -3,8 +3,11 @@ package com.example.mhz.myuniversityapp.dynaforms;
 import android.util.Log;
 
 import com.example.mhz.myuniversityapp.authentication.AuthenticationSupervisor;
+import com.example.mhz.myuniversityapp.dynaforms.post.PostRequest;
+import com.example.mhz.myuniversityapp.dynaforms.post.PostResponse;
 import com.example.mhz.myuniversityapp.util.JsonPlaceHolderAPI;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -18,20 +21,23 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class DynaFormSupervisor {
 
     private static final String TAG = "dynaforms";
-
+    Retrofit retrofitPost = new Retrofit.Builder()
+            .baseUrl("http://process.isiforge.tn/api/1.0/isi/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build();
+    JsonPlaceHolderAPI jsonPlaceHolderAPI;
     private Retrofit retrofit = new Retrofit.Builder()
             .baseUrl("http://process.isiforge.tn/api/1.0/isi/project/")
             .addConverterFactory(GsonConverterFactory.create())
             .build();
-
 
     DynaFormSupervisor() {
 
     }
 
     public JsonArray decryptArray(String pro_uid, String tas_uid) {
-        JsonPlaceHolderAPI jsonPlaceHolderAPI = retrofit.create(JsonPlaceHolderAPI.class);
         JsonArray dynaform_JSONArray = new JsonArray();
+        jsonPlaceHolderAPI = retrofit.create(JsonPlaceHolderAPI.class);
         Call<List<Step>> call = jsonPlaceHolderAPI.getStep(pro_uid, tas_uid, "Bearer " + AuthenticationSupervisor.getToken());
         List<Step> steps;
         try {
@@ -59,7 +65,7 @@ public class DynaFormSupervisor {
                 JsonObject jobject = new JsonParser().parse(codedString).getAsJsonObject();
                 JsonArray jarray = jobject.getAsJsonArray("items");
                 String result = jarray.get(0).toString();
-                Log.i(TAG, "result : "+result);
+                Log.i(TAG, "result : " + result);
 
                 //**********Second Stage Items ******************************//
 
@@ -73,5 +79,37 @@ public class DynaFormSupervisor {
             e.printStackTrace();
         }
         return dynaform_JSONArray;
+    }
+
+    public boolean submit(String pro_uid, String tas_uid, String object) {
+        JsonElement jelement = new JsonParser().parse(object);
+        JsonArray jsonArrayVariables = jelement.getAsJsonArray();
+
+        PostRequest postRequest = new PostRequest(pro_uid, tas_uid, jsonArrayVariables);
+        jsonPlaceHolderAPI = retrofitPost.create(JsonPlaceHolderAPI.class);
+        Call<PostResponse> call = jsonPlaceHolderAPI.PostCase(postRequest, "Bearer " + AuthenticationSupervisor.getToken());
+        PostResponse postResponse;
+        try {
+            postResponse = call.execute().body();
+            if (postResponse != null) {
+                System.out.println("Response for POST -->  " + postResponse.toString());
+                return true;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
+//        call.enqueue(new Callback<PostResponse>() {
+//            @Override
+//            public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {
+//
+//                System.out.println("Response for POST -->  " + response.message());
+//            }
+//
+//            @Override
+//            public void onFailure(Call<PostResponse> call, Throwable throwable) {
+//
+//            }
+//        });
     }
 }
