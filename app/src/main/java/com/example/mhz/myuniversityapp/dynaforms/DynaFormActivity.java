@@ -2,12 +2,14 @@ package com.example.mhz.myuniversityapp.dynaforms;
 
 import android.annotation.SuppressLint;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -33,8 +35,9 @@ public class DynaFormActivity extends AppCompatActivity {
         setContentView(R.layout.activity_dyna_form);
 
         params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
-        params.setMargins(5,5,5,5);
+        params.setMargins(10,10,10,30);
 
+        tmpLayout = new LinearLayout(getBaseContext());
         dynaforms = findViewById(R.id.dynaforms);
         dynaformProgress = findViewById(R.id.dynaform_progress);
         formContainer = findViewById(R.id.form_container);
@@ -63,11 +66,28 @@ public class DynaFormActivity extends AppCompatActivity {
                         String label = tmpObject.getAsJsonObject().get("label").toString();
                         if (type.contains("image")) {
                             ImageView imageView = new ImageView(getApplicationContext());
-//                            imageView.setImageResource(tmpObject.getAsJsonObject().get("src").toString());
+                            imageView.setImageResource(R.mipmap.logo);
+                            imageView.setLayoutParams(params);
+                            tmpLayout.addView(imageView);
 
-                        } else if (type.contains("text")) {
+                        } else if (type.contains("textarea")) {
                             EditText editText = new EditText(getBaseContext());
-                            editText.setHint(label);
+                            editText.setHint(tmpObject.getAsJsonObject().get("label").toString().replaceAll("\"","").replaceAll("\\\\n",""));
+                            editText.setTextSize(20);
+                            editText.setLayoutParams(params);
+                            editText.setBackgroundColor(Color.WHITE);
+                            editText.setHintTextColor(Color.GRAY);
+                            editText.setGravity(Gravity.CENTER);
+                            editText.setTextColor(Color.BLACK);
+                            editText.setSingleLine(false);
+                            editText.setImeOptions(EditorInfo.IME_FLAG_NO_ENTER_ACTION);
+                            editText.setPadding(5,5,5,5);
+                            tmpLayout.addView(editText);
+                        }
+                        else if (type.contains("text")) {
+                            EditText editText = new EditText(getBaseContext());
+                            editText.setHint(tmpObject.getAsJsonObject().get("label").toString().replaceAll("\"","").replaceAll("\\\\n",""));
+                            editText.setTextSize(25);
                             editText.setLayoutParams(params);
                             editText.setBackgroundColor(Color.WHITE);
                             editText.setHintTextColor(Color.GRAY);
@@ -75,14 +95,25 @@ public class DynaFormActivity extends AppCompatActivity {
                             editText.setTextColor(Color.BLACK);
                             editText.setPadding(5,5,5,5);
                             tmpLayout.addView(editText);
-                        }
-                        else if (type.contains("title")) {
+                        }else if (type.contains("subtitle")) {
                             TextView textView = new TextView(getBaseContext());
                             textView.setLayoutParams(params);
                             textView.setTextColor(Color.BLACK);
+                            textView.setGravity(Gravity.CENTER_HORIZONTAL);
                             textView.setTextSize(20);
                             textView.setPadding(5,5,5,5);
-                            textView.setText(tmpObject.getAsJsonObject().get("label").toString().replaceAll("\n",""));
+                            textView.setText(tmpObject.getAsJsonObject().get("label").toString().replaceAll("\"","").replaceAll("\\\\n",""));
+                            tmpLayout.addView(textView);
+                        }
+                        else if (type.contains("title")) {
+                            TextView textView = new TextView(getBaseContext(),null,R.style.TitleStyle);
+                            textView.setLayoutParams(params);
+                            textView.setTypeface(null, Typeface.BOLD);
+                            textView.setTextColor(Color.BLACK);
+                            textView.setGravity(Gravity.CENTER_HORIZONTAL);
+                            textView.setTextSize(25);
+                            textView.setPadding(5,5,5,5);
+                            textView.setText(tmpObject.getAsJsonObject().get("label").toString().replaceAll("\"","").replaceAll("\\\\n",""));
                             tmpLayout.addView(textView);
                         }
                         else if (type.contains("submit")) {
@@ -90,7 +121,7 @@ public class DynaFormActivity extends AppCompatActivity {
                             button.setLayoutParams(params);
                             //button.setTextColor(Color.BLACK);
                             button.setPadding(5,5,5,5);
-                            button.setText(tmpObject.getAsJsonObject().get("label").toString().replaceAll("\n",""));
+                            button.setText(tmpObject.getAsJsonObject().get("label").toString().replaceAll("\"","").replaceAll("\\\\n",""));
                             tmpLayout.addView(button);
                         }
                     }
@@ -109,11 +140,11 @@ public class DynaFormActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             formContainer.removeAllViewsInLayout();
-            tmpLayout = new LinearLayout(getBaseContext());
+            tmpLayout.removeAllViewsInLayout();
             tmpLayout.setLayoutParams(params);
             tmpLayout.setPadding(5,5,5,5);
             tmpLayout.setOrientation(LinearLayout.VERTICAL);
-            tmpLayout.setGravity(Gravity.CENTER);
+            tmpLayout.setGravity(Gravity.CENTER_HORIZONTAL);
         }
 
         @Override

@@ -12,6 +12,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class AuthenticationSupervisor {
 
     private static String token;
+    private static String username;
     private static boolean authenticated = false;
 
 
@@ -37,8 +38,13 @@ public class AuthenticationSupervisor {
         AuthenticationSupervisor.authenticated = authenticated;
     }
 
+    public static String getUsername() {
+        return username;
+    }
+
     public  AuthenticationResponse authenticate(AuthenticationRequest authenticationRequest      ) throws IOException {
 
+        username = authenticationRequest.getUsername();
         JsonPlaceHolderAPI jsonPlaceHolderAPI_for_auth = retrofit.create(JsonPlaceHolderAPI.class);
         Call<AuthenticationResponse> call = jsonPlaceHolderAPI_for_auth.getToken(authenticationRequest);
         return call.execute().body();

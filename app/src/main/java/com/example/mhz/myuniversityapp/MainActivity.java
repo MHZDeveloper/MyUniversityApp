@@ -2,7 +2,6 @@ package com.example.mhz.myuniversityapp;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.app.ProgressDialog;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -25,7 +24,7 @@ public class MainActivity extends AppCompatActivity
         ItemFragment.OnListFragmentInteractionListener,
         BlankFragment.OnFragmentInteractionListener {
 
-    public static ProgressDialog dialog;
+
 
 
     @Override
@@ -58,6 +57,12 @@ public class MainActivity extends AppCompatActivity
         BlankFragment blankFragment = new BlankFragment();
         fragmentTransaction.replace(R.id.fragment, blankFragment);
         fragmentTransaction.commit();
+
+        //TODO  print username
+//        if (AuthenticationSupervisor.getUsername()!=null){
+//            TextView textView = drawer.findViewById(R.id.textView);
+//            textView.setText(AuthenticationSupervisor.getUsername());
+//        }
     }
 
     @Override
