@@ -30,6 +30,7 @@ public class DynaFormActivity extends AppCompatActivity {
     private View dynaforms;
     private View dynaformProgress;
     private LinearLayout formContainer;
+    private LinearLayout buttonsLayout;
     private LinearLayout tmpLayout;
     private DynaFormSupervisor dynaFormSupervisor;
 
@@ -116,27 +117,41 @@ public class DynaFormActivity extends AppCompatActivity {
                             textView.setPadding(5, 5, 5, 5);
                             textView.setText(tmpObject.getAsJsonObject().get("label").toString().replaceAll("\"", "").replaceAll("\\\\n", ""));
                             tmpLayout.addView(textView);
-                        } else if (type.contains("submit")) { // SUBMIT
-                            Button button = new Button(context);
-                            button.setLayoutParams(params);
-                            button.setPadding(5, 5, 5, 5);
-                            button.setText(tmpObject.getAsJsonObject().get("label").toString().replaceAll("\"", "").replaceAll("\\\\n", ""));
-                            tmpLayout.addView(button);
-                            button.setOnClickListener(view -> {
-                                if (checkNoEmptyArea_PreparePostObject()){
-                                    PostRequestTask postRequestTask = new PostRequestTask();
-                                    postRequestTask.execute();
-                                }
-                            });
                         }
                     }
                 }
+                //buttons Layout
+                // SUBMIT
+                Button submitButton = new Button(context);
+                submitButton.setPadding(5, 5, 5, 5);
+                submitButton.setText("Envoyer");
+                submitButton.setOnClickListener(view -> {
+                    if (checkNoEmptyArea_PreparePostObject()) {
+                        PostRequestTask postRequestTask = new PostRequestTask();
+                        postRequestTask.execute();
+                    }
+                });
+                //RESET
+                Button cancelButton = new Button(context);
+                cancelButton.setPadding(5, 5, 5, 5);
+                cancelButton.setText("Annuler");
+                cancelButton.setOnClickListener(view -> {
+                    finish();
+                });
+                //Layout
+                buttonsLayout = new LinearLayout(context);
+                buttonsLayout.setOrientation(LinearLayout.HORIZONTAL);
+                buttonsLayout.setLayoutParams(params);
+                buttonsLayout.setGravity(Gravity.CENTER);
+                buttonsLayout.addView(cancelButton);
+                buttonsLayout.addView(submitButton);
             }
             return true;
         }
 
         @Override
         protected void onPostExecute(Boolean aBoolean) {
+            tmpLayout.addView(buttonsLayout);
             formContainer.addView(tmpLayout);
             dynaformProgress.setVisibility(View.GONE);
             dynaforms.setVisibility(View.VISIBLE);
@@ -152,34 +167,35 @@ public class DynaFormActivity extends AppCompatActivity {
             tmpLayout.setGravity(Gravity.CENTER_HORIZONTAL);
         }
 
-        public boolean checkNoEmptyArea_PreparePostObject(){
+
+        @Override
+        protected void onCancelled() {
+            super.onCancelled();
+        }
+
+        public boolean checkNoEmptyArea_PreparePostObject() {
             boolean resultEmpty = true;
             postObject = "[";
-            for (int i=0;i<tmpLayout.getChildCount();i++){
+            for (int i = 0; i < tmpLayout.getChildCount(); i++) {
                 if (tmpLayout.getChildAt(i) instanceof EditText) {
                     if (((EditText) tmpLayout.getChildAt(i)).getText().toString().replaceAll(" ", "").isEmpty()) {
                         resultEmpty = false;
                         Toast.makeText(context, "Champ vide", Toast.LENGTH_SHORT).show();
                         break;
                     } else {
-                        postObject = postObject + "{"+tmpLayout.getChildAt(i).getTag().toString()+":\""+((EditText) tmpLayout.getChildAt(i)).getText().toString()+"\"},";
+                        postObject = postObject + "{" + tmpLayout.getChildAt(i).getTag().toString() + ":\"" + ((EditText) tmpLayout.getChildAt(i)).getText().toString() + "\"},";
                     }
                 }
             }
-            postObject = postObject.substring(0,postObject.length()-1);
-            postObject = postObject+"]";
-            System.out.println("*********"+postObject);
+            postObject = postObject.substring(0, postObject.length() - 1);
+            postObject = postObject + "]";
             return resultEmpty;
         }
 
-        @Override
-        protected void onCancelled() {
-            super.onCancelled();
-        }
     }
 
     @SuppressLint("StaticFieldLeak")
-    public class PostRequestTask extends AsyncTask<Void, Void, Boolean>{
+    public class PostRequestTask extends AsyncTask<Void, Void, Boolean> {
 
         private boolean result;
 
@@ -194,13 +210,13 @@ public class DynaFormActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Boolean aBoolean) {
-            if(result){
-                Toast.makeText(getApplicationContext(),"Request sent",Toast.LENGTH_SHORT).show();
+            if (result) {
+                Toast.makeText(getApplicationContext(), "Request sent", Toast.LENGTH_SHORT).show();
                 finish();
-            }
-            else{
-                Toast.makeText(getApplicationContext(),"Problem",Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getApplicationContext(), "Problem", Toast.LENGTH_SHORT).show();
             }
         }
     }
+
 }
