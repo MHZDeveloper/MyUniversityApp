@@ -4,7 +4,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.example.mhz.myuniversityapp.authentication.AuthenticationSupervisor;
-import com.example.mhz.myuniversityapp.util.JsonPlaceHolderAPI;
+import com.example.mhz.myuniversityapp.util.ProcessMakerAPI;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -55,8 +55,8 @@ public class Processes extends AsyncTask<Void, Void, Boolean> {
                 .baseUrl("https://jsonplaceholder.typicode.com/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-        JsonPlaceHolderAPI jsonPlaceHolderAPI = retrofit.create(JsonPlaceHolderAPI.class);
-        Call<List<Case>> call = jsonPlaceHolderAPI.getUser("Bearer "+ AuthenticationSupervisor.getToken());
+        ProcessMakerAPI processMakerAPI = retrofit.create(ProcessMakerAPI.class);
+        Call<List<Case>> call = processMakerAPI.getUser("Bearer "+ AuthenticationSupervisor.getToken());
         List<Case> cases = null;
         try {
             cases = (List<Case>) call.execute().body();

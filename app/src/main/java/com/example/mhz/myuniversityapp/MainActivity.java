@@ -22,7 +22,7 @@ import com.example.mhz.myuniversityapp.processes.Processes;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         ItemFragment.OnListFragmentInteractionListener,
-        BlankFragment.OnFragmentInteractionListener {
+        ActualityFragment.OnFragmentInteractionListener {
 
 
 
@@ -54,8 +54,8 @@ public class MainActivity extends AppCompatActivity
 
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        BlankFragment blankFragment = new BlankFragment();
-        fragmentTransaction.replace(R.id.fragment, blankFragment);
+        ActualityFragment actualityFragment = new ActualityFragment();
+        fragmentTransaction.replace(R.id.fragment, actualityFragment);
         fragmentTransaction.commit();
 
         //TODO  print username
@@ -107,11 +107,11 @@ public class MainActivity extends AppCompatActivity
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         ItemFragment itemFragment = new ItemFragment();
-        BlankFragment blankFragment = new BlankFragment();
+        ActualityFragment actualityFragment = new ActualityFragment();
         if (id == R.id.demandes) {
             fragmentTransaction.replace(R.id.fragment, itemFragment);
         } else if (id == R.id.menu) {
-            fragmentTransaction.replace(R.id.fragment, blankFragment);
+            fragmentTransaction.replace(R.id.fragment, actualityFragment);
 
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

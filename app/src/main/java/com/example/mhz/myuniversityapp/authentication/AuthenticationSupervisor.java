@@ -1,7 +1,7 @@
 package com.example.mhz.myuniversityapp.authentication;
 
 
-import com.example.mhz.myuniversityapp.util.JsonPlaceHolderAPI;
+import com.example.mhz.myuniversityapp.util.ProcessMakerAPI;
 
 import java.io.IOException;
 
@@ -45,8 +45,8 @@ public class AuthenticationSupervisor {
     public  AuthenticationResponse authenticate(AuthenticationRequest authenticationRequest      ) throws IOException {
 
         username = authenticationRequest.getUsername();
-        JsonPlaceHolderAPI jsonPlaceHolderAPI_for_auth = retrofit.create(JsonPlaceHolderAPI.class);
-        Call<AuthenticationResponse> call = jsonPlaceHolderAPI_for_auth.getToken(authenticationRequest);
+        ProcessMakerAPI processMakerAPI_for_auth = retrofit.create(ProcessMakerAPI.class);
+        Call<AuthenticationResponse> call = processMakerAPI_for_auth.getToken(authenticationRequest);
         return call.execute().body();
 
     }

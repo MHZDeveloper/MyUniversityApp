@@ -5,7 +5,7 @@ import android.util.Log;
 import com.example.mhz.myuniversityapp.authentication.AuthenticationSupervisor;
 import com.example.mhz.myuniversityapp.dynaforms.post.PostRequest;
 import com.example.mhz.myuniversityapp.dynaforms.post.PostResponse;
-import com.example.mhz.myuniversityapp.util.JsonPlaceHolderAPI;
+import com.example.mhz.myuniversityapp.util.ProcessMakerAPI;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -25,7 +25,7 @@ public class DynaFormSupervisor {
             .baseUrl("http://process.isiforge.tn/api/1.0/isi/")
             .addConverterFactory(GsonConverterFactory.create())
             .build();
-    JsonPlaceHolderAPI jsonPlaceHolderAPI;
+    ProcessMakerAPI processMakerAPI;
     private Retrofit retrofit = new Retrofit.Builder()
             .baseUrl("http://process.isiforge.tn/api/1.0/isi/project/")
             .addConverterFactory(GsonConverterFactory.create())
@@ -37,8 +37,8 @@ public class DynaFormSupervisor {
 
     public JsonArray decryptArray(String pro_uid, String tas_uid) {
         JsonArray dynaform_JSONArray = new JsonArray();
-        jsonPlaceHolderAPI = retrofit.create(JsonPlaceHolderAPI.class);
-        Call<List<Step>> call = jsonPlaceHolderAPI.getStep(pro_uid, tas_uid, "Bearer " + AuthenticationSupervisor.getToken());
+        processMakerAPI = retrofit.create(ProcessMakerAPI.class);
+        Call<List<Step>> call = processMakerAPI.getStep(pro_uid, tas_uid, "Bearer " + AuthenticationSupervisor.getToken());
         List<Step> steps;
         try {
             steps = call.execute().body();
@@ -53,7 +53,7 @@ public class DynaFormSupervisor {
 
                 }
 
-                Call<DynaForm> call_DynaForm = jsonPlaceHolderAPI.getDynaform(pro_uid, steps.get(index).getStep_uid_obj(), "Bearer " + AuthenticationSupervisor.getToken());
+                Call<DynaForm> call_DynaForm = processMakerAPI.getDynaform(pro_uid, steps.get(index).getStep_uid_obj(), "Bearer " + AuthenticationSupervisor.getToken());
                 DynaForm dynaForm = call_DynaForm.execute().body();
                 String codedString = dynaForm.getDyn_content();
                 Log.i(TAG, codedString);
@@ -86,8 +86,8 @@ public class DynaFormSupervisor {
         JsonArray jsonArrayVariables = jelement.getAsJsonArray();
 
         PostRequest postRequest = new PostRequest(pro_uid, tas_uid, jsonArrayVariables);
-        jsonPlaceHolderAPI = retrofitPost.create(JsonPlaceHolderAPI.class);
-        Call<PostResponse> call = jsonPlaceHolderAPI.PostCase(postRequest, "Bearer " + AuthenticationSupervisor.getToken());
+        processMakerAPI = retrofitPost.create(ProcessMakerAPI.class);
+        Call<PostResponse> call = processMakerAPI.PostCase(postRequest, "Bearer " + AuthenticationSupervisor.getToken());
         PostResponse postResponse;
         try {
             postResponse = call.execute().body();
